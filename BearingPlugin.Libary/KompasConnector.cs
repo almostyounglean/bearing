@@ -3,25 +3,33 @@ using Kompas6API5;
 
 namespace BearingPlugin.Libary
 {
+    /// <summary>
+    /// Класс для подключения к Компас 3D
+    /// </summary>
     public class KompasConnector
     {
-        private KompasObject _kompas;
+
+        /// <summary>
+        /// Интерфейс API КОМПАС 3D
+        /// </summary>
+        public KompasObject Kompas { get; set; }
+        
 
         /// <summary>
         /// Запуск Компас 3D
         /// </summary>
         public void OpenKompas()
         {
-            if (_kompas == null)
+            if (Kompas == null)
             {
                 var type = Type.GetTypeFromProgID("KOMPAS.Application.5");
-                _kompas = (KompasObject)Activator.CreateInstance(type);
+                Kompas = (KompasObject)Activator.CreateInstance(type);
             }
 
-            if (_kompas != null)
+            if (Kompas != null)
             {
-                _kompas.Visible = true;
-                _kompas.ActivateControllerAPI();
+                Kompas.Visible = true;
+                Kompas.ActivateControllerAPI();
             }
         }
 
@@ -32,20 +40,14 @@ namespace BearingPlugin.Libary
         {
             try
             {
-                _kompas.Quit();
-                _kompas = null;
+                Kompas.Quit();
+                Kompas = null;
             }
             catch
             {
-                _kompas = null;
+                Kompas = null;
             }
 
-        }
-
-        public KompasObject Kompas
-        {
-            get { return _kompas; }
-            set { _kompas = value; }
         }
     }
 }

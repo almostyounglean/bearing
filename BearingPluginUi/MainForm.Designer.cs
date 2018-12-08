@@ -32,7 +32,7 @@
             this.CloseCompasButton = new System.Windows.Forms.Button();
             this.OpenCompasButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.SupportShuft = new System.Windows.Forms.CheckBox();
             this.BuildButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -56,7 +56,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Компас 3D";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // CloseCompasButton
             // 
@@ -80,7 +79,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.checkBox1);
+            this.groupBox2.Controls.Add(this.SupportShuft);
             this.groupBox2.Controls.Add(this.BuildButton);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
@@ -97,16 +96,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Построение детали";
             // 
-            // checkBox1
+            // SupportShuft
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(152, 160);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(146, 17);
-            this.checkBox1.TabIndex = 9;
-            this.checkBox1.Text = "Наличие опорного вала";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.SupportShuft.AutoSize = true;
+            this.SupportShuft.Location = new System.Drawing.Point(152, 160);
+            this.SupportShuft.Name = "SupportShuft";
+            this.SupportShuft.Size = new System.Drawing.Size(146, 17);
+            this.SupportShuft.TabIndex = 9;
+            this.SupportShuft.Text = "Наличие опорного вала";
+            this.SupportShuft.UseVisualStyleBackColor = true;
             // 
             // BuildButton
             // 
@@ -144,7 +142,6 @@
             this.label2.Size = new System.Drawing.Size(197, 13);
             this.label2.TabIndex = 5;
             this.label2.Text = "Внешний диаметр внутреннего обода";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -161,6 +158,7 @@
             this.BearingWidth.Name = "BearingWidth";
             this.BearingWidth.Size = new System.Drawing.Size(68, 20);
             this.BearingWidth.TabIndex = 3;
+            this.BearingWidth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValidateDoubleTextBoxs_KeyPress);
             // 
             // InternalDiametrInRim
             // 
@@ -168,6 +166,7 @@
             this.InternalDiametrInRim.Name = "InternalDiametrInRim";
             this.InternalDiametrInRim.Size = new System.Drawing.Size(68, 20);
             this.InternalDiametrInRim.TabIndex = 2;
+            this.InternalDiametrInRim.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValidateDoubleTextBoxs_KeyPress);
             // 
             // ExternalDiametrInRim
             // 
@@ -175,6 +174,7 @@
             this.ExternalDiametrInRim.Name = "ExternalDiametrInRim";
             this.ExternalDiametrInRim.Size = new System.Drawing.Size(68, 20);
             this.ExternalDiametrInRim.TabIndex = 1;
+            this.ExternalDiametrInRim.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValidateDoubleTextBoxs_KeyPress);
             // 
             // ExternalDiametrOutRim
             // 
@@ -182,6 +182,8 @@
             this.ExternalDiametrOutRim.Name = "ExternalDiametrOutRim";
             this.ExternalDiametrOutRim.Size = new System.Drawing.Size(68, 20);
             this.ExternalDiametrOutRim.TabIndex = 0;
+            this.ExternalDiametrOutRim.TextChanged += new System.EventHandler(this.ExternalDiametrOutRim_TextChanged);
+            this.ExternalDiametrOutRim.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValidateDoubleTextBoxs_KeyPress);
             // 
             // MainForm
             // 
@@ -214,7 +216,7 @@
         private System.Windows.Forms.Button BuildButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox SupportShuft;
     }
 }
 
