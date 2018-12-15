@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BearingPluginUi", "BearingPluginUi\BearingPluginUi.csproj", "{CC927A68-96FC-406B-AF7A-AE189B21CA31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BearingPlugin.Libary", "BearingPlugin.Libary\BearingPlugin.Libary.csproj", "{7389DEC9-392A-44E1-9C9C-81E34A2C6381}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BearingPlugin.Library", "BearingPlugin.Libary\BearingPlugin.Library.csproj", "{7389DEC9-392A-44E1-9C9C-81E34A2C6381}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BearingPlugin.UnitTests", "BearingPlugin.UnitTests\BearingPlugin.UnitTests.csproj", "{653E2FE9-0FB1-4008-A0B9-9B605BAEDD39}"
 EndProject

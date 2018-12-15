@@ -53,16 +53,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BearingPlugin.Libary\BearingPlugin.Libary.csproj">
+    <ProjectReference Include="..\BearingPlugin.Libary\BearingPlugin.Library.csproj">
       <Project>{7389dec9-392a-44e1-9c9c-81e34a2c6381}</Project>
-      <Name>BearingPlugin.Libary</Name>
+      <Name>BearingPlugin.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

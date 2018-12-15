@@ -16,19 +16,7 @@ namespace BearingPluginUi
         {
             InitializeComponent();
             _connector = new KompasConnector();
-                FormButtons_enable(true, false, false);
-        }
-
-        private void OpenCompasButton_Click(object sender, EventArgs e)
-        {
-            _connector.OpenKompas();
-            FormButtons_enable(false, true, true);
-        }
-
-        private void CloseCompasButton_Click(object sender, EventArgs e)
-        {
-            _connector.CloseKompas();
-            FormButtons_enable(true, false, false);
+                BuildButton_enable(true);
         }
 
         private void BuildButton_Click(object sender, EventArgs e)
@@ -36,11 +24,12 @@ namespace BearingPluginUi
             var errorMsg = string.Empty;
             var dict = new Dictionary<TextBox, string>
             {
-                {ExternalDiametrOutRim, "Некорректный внешний диаметр внешнего обода\n "},
-                {ExternalDiametrInRim, "Некорректный внешний диаметр внутреннего обода\n "},
-                {InternalDiametrInRim, "Некорректный внутренний диаметр внутреннего обода\n "},
+                {ExternalDiametrOutRim, "Некорректный внешний радиус внешнего обода\n "},
+                {ExternalDiametrInRim, "Некорректный внешний радиус внутреннего обода\n "},
+                {InternalDiametrInRim, "Некорректный внутренний радиус внутреннего обода\n "},
                 {BearingWidth, "Некорректная ширина подшипника\n "},
             };
+
             var valueParams = new List<double>();
             foreach (var keyValuePair in dict)
             {
@@ -67,7 +56,9 @@ namespace BearingPluginUi
                 var parameters = new BearingParametrs(valueParams[0], 
                     valueParams[1], valueParams[2], valueParams[3],
                     supportShuft);
-
+                _connector.OpenKompas();
+                var builder = new DetailBuilder(_connector.Kompas);
+                builder.CreateDetail(parameters);
             }
             catch (FormatException ex)
             {
@@ -85,13 +76,9 @@ namespace BearingPluginUi
         /// <summary>
         /// Метод активации/деактивации кнопок формы
         /// </summary>
-        /// <param name="openButton">Кнопка "Открыть компас"</param>
-        /// <param name="closeButton">"Кнопка "Закрыть компас"</param>
         /// <param name="buildButton">"Кнопка "Построить"</param>
-        private void FormButtons_enable(bool openButton, bool closeButton, bool buildButton)
+        private void BuildButton_enable( bool buildButton)
         {
-            OpenCompasButton.Enabled = openButton;
-            CloseCompasButton.Enabled = closeButton;
             BuildButton.Enabled = buildButton;
         }
 
@@ -109,11 +96,6 @@ namespace BearingPluginUi
         private void ValidateDoubleTextBoxs_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !Regex.IsMatch(e.KeyChar.ToString(), @"[\d\b,]");
-        }
-
-        private void ExternalDiametrOutRim_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

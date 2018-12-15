@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Kompas6API5">
-      <HintPath>..\..\..\..\..\..\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\Kompas6API5.dll</HintPath>
+      <HintPath>D:\Program Files\ASCON\KOMPAS-3D V16\SDK\C#\Common\Kompas6API5.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -84,9 +84,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BearingPlugin.Libary\BearingPlugin.Libary.csproj">
+    <ProjectReference Include="..\BearingPlugin.Libary\BearingPlugin.Library.csproj">
       <Project>{7389dec9-392a-44e1-9c9c-81e34a2c6381}</Project>
-      <Name>BearingPlugin.Libary</Name>
+      <Name>BearingPlugin.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

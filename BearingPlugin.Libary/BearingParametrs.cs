@@ -10,19 +10,19 @@ namespace BearingPlugin.UI
     public class BearingParametrs
     {
         /// <summary>
-        /// Внешний диаметр внешнего обода
+        /// Внешний радиус внешнего обода
         /// </summary>
-        public double ExternalDiametrOutRim { get; private set; }
+        public double ExternalRadiusOutRim { get; private set; }
 
         /// <summary>
-        /// Внешний диаметр внутреннего обода
+        /// Внешний радиус внутреннего обода
         /// </summary>
-        public double ExternalDiametrInRim { get; private set; }
+        public double ExternalRadiusInRim { get; private set; }
 
         /// <summary>
-        /// Внутренний диаметр внутренного обода
+        /// Внутренний радиус внутренного обода
         /// </summary>
-        public double InternalDiametrInRim { get; private set; }
+        public double InternalRadiusInRim { get; private set; }
 
         /// <summary>
         /// Опорный вал
@@ -37,19 +37,19 @@ namespace BearingPlugin.UI
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="externalDiametrOutRim">Внешний диаметр внешнего обода</param>
-        /// <param name="externalDiametrInRim">Внутренний диаметр внутреннего обода</param>
-        /// <param name="internalDiametrInRim">Внутренний диаметр внутреннего обода</param>
+        /// <param name="externalRadiusOutRim">Внешний диаметр внешнего обода</param>
+        /// <param name="externalRadiusInRim">Внутренний диаметр внутреннего обода</param>
+        /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
         /// <param name="supportShuft">Опорный вал</param>
         /// <param name="widthBearing">Ширина подшипника</param>
-        public BearingParametrs(double externalDiametrOutRim, 
-            double externalDiametrInRim, 
-            double internalDiametrInRim, 
+        public BearingParametrs(double externalRadiusOutRim, 
+            double externalRadiusInRim, 
+            double internalRadiusInRim, 
              double widthBearing, bool supportShuft)
         {
-            ExternalDiametrOutRim = externalDiametrOutRim;
-            ExternalDiametrInRim = externalDiametrInRim;
-            InternalDiametrInRim = internalDiametrInRim;
+            ExternalRadiusOutRim = externalRadiusOutRim;
+            ExternalRadiusInRim = externalRadiusInRim;
+            InternalRadiusInRim = internalRadiusInRim;
             WidthBearing = widthBearing;
             SupportShuft = supportShuft; ;
 
@@ -64,29 +64,29 @@ namespace BearingPlugin.UI
         {
             var errorMessage = new List<String>();
 
-            if (ExternalDiametrOutRim < (ExternalDiametrInRim + 1.8) 
-                || ExternalDiametrOutRim > 5)
+            if (ExternalRadiusOutRim < (ExternalRadiusInRim + 1) 
+                || ExternalRadiusOutRim > 5)
             {
-                errorMessage.Add("Внешний диаметр внешнего обода должен " +
-                                 "быть больше внешнего диаметра внутреннего обода + 1.8 и меньше 5 см  ");
+                errorMessage.Add("Внешний радиус внешнего обода должен " +
+                                 "быть больше внешнего радиуса внутреннего обода + 1 и меньше 5 см  ");
             }
 
-            if (ExternalDiametrInRim < (InternalDiametrInRim + 0.2))
+            if (ExternalRadiusInRim < (InternalRadiusInRim + 0.2))
             {
-                errorMessage.Add("Внешний диаметр внутреннего обода должен " +
-                                 "быть больше чем внутренний диаметр внутреннего обода + 0.2 ");
+                errorMessage.Add("Внешний радиус внутреннего обода должен " +
+                                 "быть больше чем внутренний радиус внутреннего обода + 0.2 ");
             }
 
-            if (InternalDiametrInRim >= (ExternalDiametrInRim / 2) || InternalDiametrInRim < 1)
+            if (InternalRadiusInRim >= (ExternalRadiusInRim / 2) || InternalRadiusInRim < 0.5)
             {
-                errorMessage.Add("Внутренний диаметр внутреннего обода " +
-                                 "должен быть больше 1 см и не больше " +
-                                 "половины внешнего диаметра внутреннего обода");
+                errorMessage.Add("Внутренний радиус внутреннего обода " +
+                                 "должен быть больше 0.5 см и не больше " +
+                                 "половины внешнего радиуса внутреннего обода");
             }
 
-            if (WidthBearing < 1 || WidthBearing > 6)
+            if (WidthBearing < 1.5 || WidthBearing > 3)
             {
-                errorMessage.Add("Толщина подшипника должна быть в диапазоне от 1 до 6 сантиметров");
+                errorMessage.Add("Толщина подшипника должна быть в диапазоне от 1,5 до 3 сантиметров");
             }
 
             if (errorMessage.Count > 0)
@@ -102,15 +102,15 @@ namespace BearingPlugin.UI
         {
             var errorMessage = new List<String>();
 
-            if (double.IsNaN(ExternalDiametrOutRim))
+            if (double.IsNaN(ExternalRadiusOutRim))
             {
                 errorMessage.Add("Внешний диаметр внешнего обода должен быть числом\n"); 
             }
-            if (double.IsNaN(ExternalDiametrInRim))
+            if (double.IsNaN(ExternalRadiusInRim))
             {
                 errorMessage.Add("Внешний диаметр внутреннего обода должен быть числом\n");
             }
-            if (double.IsNaN(InternalDiametrInRim))
+            if (double.IsNaN(InternalRadiusInRim))
             {
                 errorMessage.Add("Внутренний диаметр внутреннего обода должен быть числом\n");
             }
