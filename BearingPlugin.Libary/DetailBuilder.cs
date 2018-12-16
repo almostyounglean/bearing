@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using BearingPlugin.UI;
 using Kompas6API5;
 using Kompas6Constants3D;
@@ -26,6 +22,13 @@ namespace BearingPlugin.Libary
 
         private ksDocument2D _sketchEdit;
 
+        //Константы
+        const int toMM = 10; //Для перевода пареметров в миллиметры
+        const int origin = 0; //Начало координат
+        const int widthHalf = 5; //Половина толщины подшипника
+        const double chamferDepth = 1.5; //Глубина выемки для шарика
+        const int rimSpacing = 2; //Расстояние между двумя ободами
+
         /// <summary>
         /// Конструктор класса
         /// </summary>
@@ -47,16 +50,18 @@ namespace BearingPlugin.Libary
                 _doc3D.Create(false, true);
             }
 
-            var externalRadiusOutRim = parameters.ExternalRadiusOutRim * 10;
-            var externalRadiusInRim = parameters.ExternalRadiusInRim * 10;
-            var internalRadiusInRim = parameters.InternalRadiusInRim * 10;
-            var widthBearing = parameters.WidthBearing * 10;
+            var externalRadiusOutRim = parameters.ExternalRadiusOutRim * toMM;
+            var externalRadiusInRim = parameters.ExternalRadiusInRim * toMM;
+            var internalRadiusInRim = parameters.InternalRadiusInRim * toMM;
+            var widthBearing = parameters.WidthBearing * toMM;
             var supportShuft = parameters.SupportShuft;
 
             _doc3D = (ksDocument3D)_kompas.ActiveDocument3D();
             _part = (ksPart)_doc3D.GetPart((short)Part_Type.pTop_Part);
 
+        
             RimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+            RotateSketch();
 
         }
 
@@ -88,41 +93,58 @@ namespace BearingPlugin.Libary
 
             //Внутренний обод
             _sketchEdit.ksLineSeg
-                (0 - widthBearing / 2, internalRadiusInRim, 0 + widthBearing / 2, internalRadiusInRim, 1);
+                (origin - widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, internalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 - widthBearing / 2, internalRadiusInRim, 0 - widthBearing / 2, externalRadiusInRim, 1);
+                (origin - widthBearing / 2, internalRadiusInRim, origin - widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 + widthBearing / 2, internalRadiusInRim, 0 + widthBearing / 2, externalRadiusInRim, 1);
+                (origin + widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 + 5, externalRadiusInRim, 0 + widthBearing / 2, externalRadiusInRim, 1);
+                (origin + widthHalf, externalRadiusInRim, origin + widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 - 5, externalRadiusInRim, 0 - widthBearing / 2, externalRadiusInRim, 1);
+                (origin - widthHalf, externalRadiusInRim, origin - widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 + 5, externalRadiusInRim - 1.5, 0 + 5, externalRadiusInRim, 1);
+                (origin + widthHalf, externalRadiusInRim - chamferDepth, origin + widthHalf, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 - 5, externalRadiusInRim - 1.5, 0 - 5, externalRadiusInRim, 1);
+                (origin - widthHalf, externalRadiusInRim - chamferDepth, origin - widthHalf, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (0 - 5, externalRadiusInRim - 1.5, 0 + 5, externalRadiusInRim - 1.5, 1);
+                (origin - widthHalf, externalRadiusInRim - chamferDepth, origin + widthHalf, externalRadiusInRim - chamferDepth, 1);
 
             //Внешний обод
             _sketchEdit.ksLineSeg
-                (0 - widthBearing / 2, externalRadiusOutRim, 0 + widthBearing / 2, externalRadiusOutRim, 1);
+                (origin - widthBearing / 2, externalRadiusOutRim, origin + widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (0 - widthBearing / 2, externalRadiusInRim + 2, 0 - widthBearing / 2, externalRadiusOutRim, 1);
+                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (0 + widthBearing / 2, externalRadiusInRim + 2, 0 + widthBearing / 2, externalRadiusOutRim, 1);
+                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing, origin + widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (0 + widthBearing / 2, externalRadiusInRim + 2, 0 + 5, externalRadiusInRim + 2, 1);
+                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-                (0 - widthBearing / 2, externalRadiusInRim + 2, 0 - 5, externalRadiusInRim + 2, 1);
+                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-               ( 0 - 5, externalRadiusInRim + 2, 0 - 5, externalRadiusInRim + 3.5, 1);
+               ( origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 3.5, 1);
             _sketchEdit.ksLineSeg
-                (0 + 5, externalRadiusInRim + 2, 0 + 5, externalRadiusInRim + 3.5, 1);
+                (origin + widthHalf, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 3.5, 1);
             _sketchEdit.ksLineSeg
-                (0 + 5, externalRadiusInRim + 3.5, 0 - 5, externalRadiusInRim + 3.5, 1);
+                (origin + widthHalf, externalRadiusInRim + 3.5, origin - widthHalf, externalRadiusInRim + 3.5, 1);
+            _sketchEdit.ksLineSeg
+                (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
+        }
 
+        /// <summary>
+        /// Метод для выдавливания вращением осовного эскиза
+        /// </summary>
+        private void RotateSketch()
+        {
+            var entityRotated =
+                (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseRotated);
+            var entityRotatedDefinition =
+                (ksBaseRotatedDefinition)entityRotated.GetDefinition();
+
+            entityRotatedDefinition.directionType = 0;
+            entityRotatedDefinition.SetSideParam(true, 360);
+            entityRotatedDefinition.SetSketch(_entitySketch);
+            entityRotated.Create();
         }
 
     }
