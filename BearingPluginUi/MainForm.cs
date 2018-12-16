@@ -41,8 +41,8 @@ namespace BearingPluginUi
 
                 valueParams.Add(curentParameter);
             }
-            
-            bool.TryParse(this.SupportShuft.Text, out bool supportShuft);
+
+            var supportShuft = SupportShuft.Checked;
            
 
             if (errorMsg != String.Empty)

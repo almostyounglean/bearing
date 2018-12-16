@@ -62,14 +62,14 @@ namespace BearingPlugin.UnitTests
 
         [TestCase(5.1, 2.3, 1.1, 3, true, "externalRadiusOutRim",
             TestName = "Негативный тест поля externalRadiusOutRim если > 5")]
-        [TestCase(4, 2.3, 1.1, 3, true, "externalRadiusOutRim",
-            TestName = "Негативный тест поля externalRadiusOutRim если < externalRadiusInRim + 1.8")]
+        [TestCase(2, 1.3, 1.1, 3, true, "externalRadiusOutRim",
+            TestName = "Негативный тест поля externalRadiusOutRim если < externalRadiusInRim + 1.1")]
         [TestCase(4.5, 2.2, 1.1, 1.2, true, "externalRadiusInRim",
             TestName = "Негативный тест поля externalRadiusInRim если < internalRadiusInRim + 0.2")]
         [TestCase(4.5, 2.3, 1.2, 3, true, "internalRadiusInRim",
             TestName = "Негативный тест поля internalRadiusInRim если > externalRadiusInRim / 2")]
-        [TestCase(4.5, 2.3, 0.9, 2, true, "internalRadiusInRim",
-            TestName = "Негативный тест поля internalRadiusInRim если =< 1")]
+        [TestCase(4.5, 2.3, 0.4, 2, true, "internalRadiusInRim",
+            TestName = "Негативный тест поля internalRadiusInRim если =< 0.5")]
         [TestCase(4.5, 2.3, 1.1, 0.9, true, "widthBearing",
             TestName = "Негативный тест поля widthBearing если =< 1")]
         [TestCase(4.5, 2.3, 1.1, 7, true, "widthBearing",

@@ -8,7 +8,7 @@ namespace BearingPlugin.Libary
     /// <summary>
     /// Класс построения детали
     /// </summary>
-   public class DetailBuilder
+    public class DetailBuilder
     {
         private KompasObject _kompas;
 
@@ -25,9 +25,10 @@ namespace BearingPlugin.Libary
         //Константы
         const int toMM = 10; //Для перевода пареметров в миллиметры
         const int origin = 0; //Начало координат
-        const int widthHalf = 5; //Половина толщины подшипника
+        const int widthHalf = 5; //Половина толщины выемки
         const double chamferDepth = 1.5; //Глубина выемки для шарика
         const int rimSpacing = 2; //Расстояние между двумя ободами
+        const int ballDiametr = 10; //Диаметр шарика подшипника
 
         /// <summary>
         /// Конструктор класса
@@ -39,31 +40,35 @@ namespace BearingPlugin.Libary
         }
 
         /// <summary>
-        /// Построение детали
+        /// Метод для выдавливания вращением осовного эскиза
         /// </summary>
-        /// <param name="parameters">Параметры подшипника</param>
-        public void CreateDetail(BearingParametrs parameters)
+        private void RotateSketch()
         {
-            if (_kompas != null)
-            {
-                _doc3D = (ksDocument3D)_kompas.Document3D();
-                _doc3D.Create(false, true);
-            }
+            var entityRotated =
+                (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseRotated);
+            var entityRotatedDefinition =
+                (ksBaseRotatedDefinition)entityRotated.GetDefinition();
 
-            var externalRadiusOutRim = parameters.ExternalRadiusOutRim * toMM;
-            var externalRadiusInRim = parameters.ExternalRadiusInRim * toMM;
-            var internalRadiusInRim = parameters.InternalRadiusInRim * toMM;
-            var widthBearing = parameters.WidthBearing * toMM;
-            var supportShuft = parameters.SupportShuft;
-
-            _doc3D = (ksDocument3D)_kompas.ActiveDocument3D();
-            _part = (ksPart)_doc3D.GetPart((short)Part_Type.pTop_Part);
-
-        
-            InRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-            OutRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-
+            entityRotatedDefinition.directionType = 0;
+            entityRotatedDefinition.SetSideParam(true, 360);
+            entityRotatedDefinition.SetSketch(_entitySketch);
+            entityRotated.Create();
         }
+
+        /// <summary> 
+        /// Метод выдавливания эскиза. 
+        /// </summary> 
+        /// <returns>Ссылка на результат выдавливания 
+        private ksEntity MakeExtrude()
+        {
+            var entityExtrude = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
+            var entityExtrudeDefinition = (ksBaseExtrusionDefinition)entityExtrude.GetDefinition();
+            entityExtrudeDefinition.SetSideParam(true, 0, 50, 0, true);
+            entityExtrudeDefinition.SetSketch(_entitySketch);
+            entityExtrude.Create();
+            return entityExtrude;
+        }
+
 
         /// <summary>
         /// Метод, создающий эскиз
@@ -90,8 +95,6 @@ namespace BearingPlugin.Libary
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
-
-            
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, internalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
@@ -113,7 +116,7 @@ namespace BearingPlugin.Libary
             _sketchDefinition.EndEdit();
             RotateSketch();
         }
-        
+
         /// <summary>
         /// Эскиз внешнего обода
         /// </summary>
@@ -125,7 +128,6 @@ namespace BearingPlugin.Libary
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
-            //Внешний обод
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, externalRadiusOutRim, origin + widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
@@ -137,7 +139,7 @@ namespace BearingPlugin.Libary
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-               ( origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 3.5, 1);
+               (origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 3.5, 1);
             _sketchEdit.ksLineSeg
                 (origin + widthHalf, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 3.5, 1);
             _sketchEdit.ksLineSeg
@@ -149,19 +151,61 @@ namespace BearingPlugin.Libary
         }
 
         /// <summary>
-        /// Метод для выдавливания вращением осовного эскиза
+        /// Эскиз опорного вала
         /// </summary>
-        private void RotateSketch()
+        /// <param name="internalRadiusInRim">Внутренний радиус внутреннего обода</param>
+        /// <param name="widthBearing">Ширина подшипника</param>
+        private void SupportShuftSketch(double internalRadiusInRim)
         {
-            var entityRotated =
-                (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseRotated);
-            var entityRotatedDefinition =
-                (ksBaseRotatedDefinition)entityRotated.GetDefinition();
+            CreateSketch((short)Obj3dType.o3d_planeXOY);
+            _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
+            _sketchEdit.ksCircle(origin, origin, internalRadiusInRim, 1);
+            _sketchDefinition.EndEdit();
+            MakeExtrude();
+        }
 
-            entityRotatedDefinition.directionType = 0;
-            entityRotatedDefinition.SetSideParam(true, 360);
-            entityRotatedDefinition.SetSketch(_entitySketch);
-            entityRotated.Create();
+        /// <summary>
+        /// Эскиз шара
+        /// </summary>
+        /// <param name="externalRadiusInRim">Внешний радиус внутреннего обода</param>
+        private void BallSketch(double externalRadiusInRim)
+        {
+            CreateSketch((short)Obj3dType.o3d_planeXOY);
+            _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
+            _sketchEdit.ksArcBy3Points(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, origin, externalRadiusInRim + 3.5, 1);
+
+        }
+
+            /// <summary>
+            /// Построение детали
+            /// </summary>
+            /// <param name="parameters">Параметры подшипника</param>
+            public void CreateDetail(BearingParametrs parameters)
+        {
+            if (_kompas != null)
+            {
+                _doc3D = (ksDocument3D)_kompas.Document3D();
+                _doc3D.Create(false, true);
+            }
+
+            var externalRadiusOutRim = parameters.ExternalRadiusOutRim * toMM;
+            var externalRadiusInRim = parameters.ExternalRadiusInRim * toMM;
+            var internalRadiusInRim = parameters.InternalRadiusInRim * toMM;
+            var widthBearing = parameters.WidthBearing * toMM;
+            var supportShuft = parameters.SupportShuft;
+
+            _doc3D = (ksDocument3D)_kompas.ActiveDocument3D();
+            _part = (ksPart)_doc3D.GetPart((short)Part_Type.pTop_Part);
+
+
+            InRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+            OutRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+
+            if (supportShuft == true)
+            {
+                SupportShuftSketch(internalRadiusInRim);
+            }
+
         }
 
     }
