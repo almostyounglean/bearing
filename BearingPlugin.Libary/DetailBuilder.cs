@@ -60,8 +60,8 @@ namespace BearingPlugin.Libary
             _part = (ksPart)_doc3D.GetPart((short)Part_Type.pTop_Part);
 
         
-            RimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-            RotateSketch();
+            InRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+            OutRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
 
         }
 
@@ -80,18 +80,18 @@ namespace BearingPlugin.Libary
         }
 
         /// <summary>
-        /// Метод эскиза внутреннего и внешнего ободов
+        /// Метод эскиз внутреннего обода
         /// </summary>
         /// <param name="externalRadiusOutRim">Внешний диаметр внешнего обода</param>
         /// <param name="externalRadiusInRim">Внешний диаметр внутреннего обода</param>
         /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
         /// <param name="widthBearing">Ширина подшипника</param>
-        private void RimSketch(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+        private void InRimSketch(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
 
-            //Внутренний обод
+            
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, internalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
@@ -108,7 +108,23 @@ namespace BearingPlugin.Libary
                 (origin - widthHalf, externalRadiusInRim - chamferDepth, origin - widthHalf, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
                 (origin - widthHalf, externalRadiusInRim - chamferDepth, origin + widthHalf, externalRadiusInRim - chamferDepth, 1);
-
+            _sketchEdit.ksLineSeg
+                (-20, origin, 20, origin, 3);
+            _sketchDefinition.EndEdit();
+            RotateSketch();
+        }
+        
+        /// <summary>
+        /// Эскиз внешнего обода
+        /// </summary>
+        /// <param name="externalRadiusOutRim"></param>
+        /// <param name="externalRadiusInRim"></param>
+        /// <param name="internalRadiusInRim"></param>
+        /// <param name="widthBearing"></param>
+        private void OutRimSketch(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+        {
+            CreateSketch((short)Obj3dType.o3d_planeYOZ);
+            _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
             //Внешний обод
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, externalRadiusOutRim, origin + widthBearing / 2, externalRadiusOutRim, 1);
@@ -129,6 +145,7 @@ namespace BearingPlugin.Libary
             _sketchEdit.ksLineSeg
                 (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
+            RotateSketch();
         }
 
         /// <summary>
