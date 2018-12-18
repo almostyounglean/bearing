@@ -26,7 +26,7 @@ namespace BearingPlugin.Libary
         const int toMM = 10; //Для перевода пареметров в миллиметры
         const int origin = 0; //Начало координат
         const int widthHalf = 5; //Половина толщины выемки
-        const double chamferDepth = 1.5; //Глубина выемки для шарика
+        const double chamferDepth = 2.5; //Глубина выемки для шарика
         const int rimSpacing = 2; //Расстояние между двумя ободами
         const int ballDiametr = 10; //Диаметр шарика подшипника
 
@@ -42,7 +42,7 @@ namespace BearingPlugin.Libary
         /// <summary>
         /// Метод для выдавливания вращением осовного эскиза
         /// </summary>
-        private void RotateSketch()
+        private ksEntity RotateSketch()
         {
             var entityRotated =
                 (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseRotated);
@@ -53,6 +53,7 @@ namespace BearingPlugin.Libary
             entityRotatedDefinition.SetSideParam(true, 360);
             entityRotatedDefinition.SetSketch(_entitySketch);
             entityRotated.Create();
+            return entityRotated;
         }
 
         /// <summary> 
@@ -139,15 +140,38 @@ namespace BearingPlugin.Libary
             _sketchEdit.ksLineSeg
                 (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-               (origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 3.5, 1);
+               (origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 3.5, 1);
+                (origin + widthHalf, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim + 3.5, origin - widthHalf, externalRadiusInRim + 3.5, 1);
+                (origin + widthHalf, externalRadiusInRim + 5.5, origin - widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
                 (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
             RotateSketch();
+        }
+
+        /// <summary> 
+        /// Круговое копирование. 
+        /// </summary> 
+        /// <param name="part">Ссылка на объект.</param> 
+        /// <param name="count">Количество отверстий.</param> 
+        /// <param name="entityForExtrusion">Эскиз для операции.</param> 
+        /// <returns>Ссылка на эскиз.</returns> 
+        public ksEntity CircularEntity(ksPart part, int count, object entityForExtrusion)
+        {
+            var entityArray = (ksEntity)part.NewEntity((short)Obj3dType.o3d_circularCopy);
+            var circularCopy = (ksCircularCopyDefinition)entityArray.GetDefinition();
+            var baseAxisOZ =
+            (ksEntity)part.GetDefaultEntity((short)Obj3dType.o3d_axisOZ);
+            circularCopy.count1 = 1;
+            circularCopy.SetAxis(baseAxisOZ);
+            circularCopy.SetCopyParamAlongDir(count, 360 / count, false, false);
+            var collection = (ksEntityCollection)circularCopy.GetOperationArray();
+            collection.Clear();
+            collection.Add(entityForExtrusion);
+            entityArray.Create();
+            return entityArray;
         }
 
         /// <summary>
@@ -168,11 +192,15 @@ namespace BearingPlugin.Libary
         /// Эскиз шара
         /// </summary>
         /// <param name="externalRadiusInRim">Внешний радиус внутреннего обода</param>
-        private void BallSketch(double externalRadiusInRim)
+        private ksEntity BallSketch(double externalRadiusInRim)
         {
             CreateSketch((short)Obj3dType.o3d_planeXOY);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
-            _sketchEdit.ksArcBy3Points(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, origin, externalRadiusInRim + 3.5, 1);
+            _sketchEdit.ksArcBy3Points(origin + widthHalf, externalRadiusInRim, origin, externalRadiusInRim+5.5f, origin-widthHalf, externalRadiusInRim, 1);
+            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, 1);
+            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, 3);
+            _sketchDefinition.EndEdit();
+            return RotateSketch();
 
         }
 
@@ -200,7 +228,9 @@ namespace BearingPlugin.Libary
 
             InRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
             OutRimSketch(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-
+            var ball = BallSketch(externalRadiusInRim);
+            CircularEntity(_part, 5, ball);
+            
             if (supportShuft == true)
             {
                 SupportShuftSketch(internalRadiusInRim);
