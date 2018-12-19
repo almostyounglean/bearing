@@ -35,6 +35,13 @@ namespace BearingPlugin.UI
         public double WidthBearing { get; private set; }
 
         /// <summary>
+        /// Построение шарикового подшипника
+        /// </summary>
+        public bool BallChecked { get; private set; }
+
+    
+
+        /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="externalRadiusOutRim">Внешний диаметр внешнего обода</param>
@@ -42,16 +49,19 @@ namespace BearingPlugin.UI
         /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
         /// <param name="supportShuft">Опорный вал</param>
         /// <param name="widthBearing">Ширина подшипника</param>
+        /// <param name="BallChecked">Шариковый тип подшипника</param>
         public BearingParametrs(double externalRadiusOutRim, 
             double externalRadiusInRim, 
             double internalRadiusInRim, 
-             double widthBearing, bool supportShuft)
+             double widthBearing, bool supportShuft, bool ballChecked)
         {
             ExternalRadiusOutRim = externalRadiusOutRim;
             ExternalRadiusInRim = externalRadiusInRim;
             InternalRadiusInRim = internalRadiusInRim;
             WidthBearing = widthBearing;
-            SupportShuft = supportShuft; ;
+            SupportShuft = supportShuft;
+            BallChecked = ballChecked;
+
 
             ValueValidation();
             TypeValidation();

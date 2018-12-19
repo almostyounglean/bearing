@@ -16,9 +16,11 @@ namespace BearingPluginUi
         {
             InitializeComponent();
             _connector = new KompasConnector();
-                BuildButton_enable(true);
         }
 
+        /// <summary>
+        /// Обработка нажатия на Build
+        /// </summary>
         private void BuildButton_Click(object sender, EventArgs e)
         {
             var errorMsg = string.Empty;
@@ -43,7 +45,8 @@ namespace BearingPluginUi
             }
 
             var supportShuft = SupportShuft.Checked;
-           
+            var ballChecked = ballRadioButton.Checked;
+
 
             if (errorMsg != String.Empty)
             {
@@ -55,7 +58,7 @@ namespace BearingPluginUi
             {
                 var parameters = new BearingParametrs(valueParams[0], 
                     valueParams[1], valueParams[2], valueParams[3],
-                    supportShuft);
+                    supportShuft,ballChecked);
                 _connector.OpenKompas();
                 var builder = new DetailBuilder(_connector.Kompas);
                 builder.CreateDetail(parameters);
@@ -74,14 +77,9 @@ namespace BearingPluginUi
         }
 
         /// <summary>
-        /// Метод активации/деактивации кнопок формы
+        /// Метод отображения предупреждения через MessageBox
         /// </summary>
-        /// <param name="buildButton">"Кнопка "Построить"</param>
-        private void BuildButton_enable( bool buildButton)
-        {
-            BuildButton.Enabled = buildButton;
-        }
-
+        /// <param name="message">Строка сообщения</param>
         private void ShowMessage(string message)
         {
             MessageBox.Show(message,
@@ -97,5 +95,6 @@ namespace BearingPluginUi
         {
             e.Handled = !Regex.IsMatch(e.KeyChar.ToString(), @"[\d\b,]");
         }
+
     }
 }
