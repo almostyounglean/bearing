@@ -12,14 +12,14 @@ namespace BearingPlugin.UnitTests
         [SetUp]
         public void Test()
         {
-            _parameters = new BearingParametrs(4.5, 2.7, 1.3, 3, true);
+            _parameters = new BearingParametrs(4.5, 2.7, 1.3, 3, true,true);
         }
 
         [Test(Description = "Позитивный тест коструктора класса ")]
 
         public void TestBearingParametrs_CorrectValue()
         {
-            var expectedParameters = new BearingParametrs(4.5, 2.7, 1.3, 3, true);
+            var expectedParameters = new BearingParametrs(4.5, 2.7, 1.3, 3, true,true);
             var actual = _parameters;
 
             Assert.AreEqual
@@ -55,7 +55,7 @@ namespace BearingPlugin.UnitTests
             Assert.Throws<ArgumentException>(
                 () => {
                     var parameters = new BearingParametrs
-                (externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing, true);
+                (externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing, true,true);
                 },
                 "Возникнет исключение если в поле " + attr + " значение double.Nan");
         }
@@ -74,8 +74,6 @@ namespace BearingPlugin.UnitTests
             TestName = "Негативный тест поля widthBearing если =< 1")]
         [TestCase(4.5, 2.3, 1.1, 7, true, "widthBearing",
             TestName = "Негативный тест поля widthBearing если > 6")]
-      
-
         public void TestBearingParametrs_ArgumentValue
         (double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim,
             double widthBearing, bool supportShuft, string attr)
@@ -83,11 +81,10 @@ namespace BearingPlugin.UnitTests
             Assert.Throws<ArgumentException>(
                 () => {
                     var parameters = new BearingParametrs
-                        (externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing, true);
+                        (externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing, true,true);
                 },
                 "Должно возникнуть исключение если значение поля "
                 + attr + "выходит за диапозон доп-х значений");
         }
     }
 }
-

@@ -22,13 +22,39 @@ namespace BearingPlugin.Libary
 
         private ksDocument2D _sketchEdit;
 
-        //Константы
-        const int toMM = 10; //Для перевода пареметров в миллиметры
-        const int origin = 0; //Начало координат
-        const int widthHalf = 5; //Половина толщины выемки
-        const double chamferDepth = 2.5; //Глубина выемки для шарика
-        const int rimSpacing = 2; //Расстояние между двумя ободами
-        const int ballDiametr = 10; //Диаметр шарика подшипника
+        #region Constants
+
+        /// <summary>
+        /// Начало координат
+        /// </summary>
+        private const int origin = 0;
+
+        /// <summary>
+        /// Половина толщины выемки
+        /// </summary>
+        private const int widthHalf = 5;
+
+        /// <summary>
+        /// Глубина выемки для шарика
+        /// </summary>
+        private const double chamferDepth = 2.5;
+
+        /// <summary>
+        /// Перевод в миллиметры
+        /// </summary>
+        private const int toMM = 10;
+
+        /// <summary>
+        /// Расстояние между двумя ободами
+        /// </summary>
+        private const int rimSpacing = 2;
+
+        /// <summary>
+        /// Диаметр шарика подшипника
+        /// </summary>
+        private const int ballDiametr = 10; 
+
+        #endregion Constants
 
         /// <summary>
         /// Конструктор класса
@@ -76,8 +102,10 @@ namespace BearingPlugin.Libary
         /// <returns>Ссылка на результат выдавливания 
         private ksEntity MakeExtrude(double depth)
         {
-            var entityExtrude = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
-            var entityExtrudeDefinition = (ksBaseExtrusionDefinition)entityExtrude.GetDefinition();
+            var entityExtrude = (ksEntity)_part.NewEntity(
+                (short)Obj3dType.o3d_baseExtrusion);
+            var entityExtrudeDefinition = 
+                (ksBaseExtrusionDefinition)entityExtrude.GetDefinition();
             entityExtrudeDefinition.SetSideParam(true, 0, depth, 0, true);
             entityExtrudeDefinition.SetSketch(_entitySketch);
             entityExtrude.Create();
@@ -144,9 +172,12 @@ namespace BearingPlugin.Libary
         {
             CreateSketch((short)Obj3dType.o3d_planeXOY);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
-            _sketchEdit.ksArcBy3Points(origin + widthHalf, externalRadiusInRim, origin, externalRadiusInRim+5.5f, origin-widthHalf, externalRadiusInRim, 1);
-            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, 1);
-            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim, origin - widthHalf, externalRadiusInRim, 3);
+            _sketchEdit.ksArcBy3Points(origin + widthHalf, externalRadiusInRim, origin, 
+                externalRadiusInRim+5.5f, origin-widthHalf, externalRadiusInRim, 1);
+            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim,
+                origin - widthHalf, externalRadiusInRim, 1);
+            _sketchEdit.ksLineSeg(origin + widthHalf, externalRadiusInRim, 
+                origin - widthHalf, externalRadiusInRim, 3);
             _sketchDefinition.EndEdit();
             return RotateSketch();
 
@@ -159,7 +190,8 @@ namespace BearingPlugin.Libary
         /// <param name="externalRadiusInRim">Внешний диаметр внутреннего обода</param>
         /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
         /// <param name="widthBearing">Ширина подшипника</param>
-        private void InRimSketchForRollBearing(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+        private void InRimSketchForRollBearing(double externalRadiusOutRim, double externalRadiusInRim,
+            double internalRadiusInRim, double widthBearing)
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
@@ -168,9 +200,11 @@ namespace BearingPlugin.Libary
             _sketchEdit.ksLineSeg
                 (origin, internalRadiusInRim, origin, externalRadiusInRim - chamferDepth, 1);
             _sketchEdit.ksLineSeg
-                (origin -  widthBearing , internalRadiusInRim, origin - widthBearing , externalRadiusInRim - chamferDepth, 1);
+                (origin -  widthBearing , internalRadiusInRim, 
+                origin - widthBearing , externalRadiusInRim - chamferDepth, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing, externalRadiusInRim - chamferDepth, origin, externalRadiusInRim - chamferDepth, 1);
+                (origin - widthBearing, externalRadiusInRim - chamferDepth, 
+                origin, externalRadiusInRim - chamferDepth, 1);
             _sketchEdit.ksLineSeg
             (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
@@ -184,18 +218,22 @@ namespace BearingPlugin.Libary
         /// <param name="externalRadiusInRim">Внешний диаметр внутреннего обода</param>
         /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
         /// <param name="widthBearing">Ширина подшипника</param>
-        private void OutRimSketchForRollBearing(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+        private void OutRimSketchForRollBearing(double externalRadiusOutRim,
+            double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
             _sketchEdit.ksLineSeg
                 (origin - widthBearing , externalRadiusOutRim, origin, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing, externalRadiusInRim + rimSpacing + chamferDepth, origin - widthBearing, externalRadiusOutRim, 1);
+                (origin - widthBearing, externalRadiusInRim + rimSpacing + chamferDepth,
+                origin - widthBearing, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin, externalRadiusInRim + rimSpacing + chamferDepth, origin, externalRadiusOutRim, 1);
+                (origin, externalRadiusInRim + rimSpacing + chamferDepth,
+                origin, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing , externalRadiusInRim + rimSpacing + chamferDepth, origin, externalRadiusInRim + rimSpacing + chamferDepth, 1);
+                (origin - widthBearing , externalRadiusInRim + rimSpacing + chamferDepth,
+                origin, externalRadiusInRim + rimSpacing + chamferDepth, 1);
             _sketchEdit.ksLineSeg
                (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
@@ -204,30 +242,39 @@ namespace BearingPlugin.Libary
             /// <summary>
             ///  Эскиз внутреннего обода для шарикового подшипника
             /// </summary>
-            /// <param name="externalRadiusOutRim">Внешний диаметр внешнего обода</param>
-            /// <param name="externalRadiusInRim">Внешний диаметр внутреннего обода</param>
-            /// <param name="internalRadiusInRim">Внутренний диаметр внутреннего обода</param>
+            /// <param name="externalRadiusOutRim">Внешний радиус внешнего обода</param>
+            /// <param name="externalRadiusInRim">Внешний радиус внутреннего обода</param>
+            /// <param name="internalRadiusInRim">Внутренний радиус внутреннего обода</param>
             /// <param name="widthBearing">Ширина подшипника</param>
-            private void InRimSketchForBallBearing(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+            private void InRimSketchForBallBearing(double externalRadiusOutRim, 
+                double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
             _sketchEdit.ksLineSeg
-                (origin - widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, internalRadiusInRim, 1);
+                (origin - widthBearing / 2, internalRadiusInRim, 
+                origin + widthBearing / 2, internalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing / 2, internalRadiusInRim, origin - widthBearing / 2, externalRadiusInRim, 1);
+                (origin - widthBearing / 2, internalRadiusInRim,
+                origin - widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthBearing / 2, internalRadiusInRim, origin + widthBearing / 2, externalRadiusInRim, 1);
+                (origin + widthBearing / 2, internalRadiusInRim,
+                origin + widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim, origin + widthBearing / 2, externalRadiusInRim, 1);
+                (origin + widthHalf, externalRadiusInRim,
+                origin + widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthHalf, externalRadiusInRim, origin - widthBearing / 2, externalRadiusInRim, 1);
+                (origin - widthHalf, externalRadiusInRim, 
+                origin - widthBearing / 2, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim - chamferDepth, origin + widthHalf, externalRadiusInRim, 1);
+                (origin + widthHalf, externalRadiusInRim - chamferDepth,
+                origin + widthHalf, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthHalf, externalRadiusInRim - chamferDepth, origin - widthHalf, externalRadiusInRim, 1);
+                (origin - widthHalf, externalRadiusInRim - chamferDepth,
+                origin - widthHalf, externalRadiusInRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthHalf, externalRadiusInRim - chamferDepth, origin + widthHalf, externalRadiusInRim - chamferDepth, 1);
+                (origin - widthHalf, externalRadiusInRim - chamferDepth,
+                origin + widthHalf, externalRadiusInRim - chamferDepth, 1);
             _sketchEdit.ksLineSeg
                 (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
@@ -241,26 +288,35 @@ namespace BearingPlugin.Libary
         /// <param name="externalRadiusInRim"></param>
         /// <param name="internalRadiusInRim"></param>
         /// <param name="widthBearing"></param>
-        private void OutRimSketchForBallBearing(double externalRadiusOutRim, double externalRadiusInRim, double internalRadiusInRim, double widthBearing)
+        private void OutRimSketchForBallBearing(double externalRadiusOutRim, double externalRadiusInRim,
+            double internalRadiusInRim, double widthBearing)
         {
             CreateSketch((short)Obj3dType.o3d_planeYOZ);
             _sketchEdit = (ksDocument2D)_sketchDefinition.BeginEdit();
             _sketchEdit.ksLineSeg
-                (origin - widthBearing / 2, externalRadiusOutRim, origin + widthBearing / 2, externalRadiusOutRim, 1);
+                (origin - widthBearing / 2, externalRadiusOutRim,
+                origin + widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthBearing / 2, externalRadiusOutRim, 1);
+                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing,
+                origin - widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing, origin + widthBearing / 2, externalRadiusOutRim, 1);
+                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing,
+                origin + widthBearing / 2, externalRadiusOutRim, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 2, 1);
+                (origin + widthBearing / 2, externalRadiusInRim + rimSpacing,
+                origin + widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 2, 1);
+                (origin - widthBearing / 2, externalRadiusInRim + rimSpacing,
+                origin - widthHalf, externalRadiusInRim + 2, 1);
             _sketchEdit.ksLineSeg
-               (origin - widthHalf, externalRadiusInRim + rimSpacing, origin - widthHalf, externalRadiusInRim + 5.5, 1);
+               (origin - widthHalf, externalRadiusInRim + rimSpacing,
+               origin - widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim + rimSpacing, origin + widthHalf, externalRadiusInRim + 5.5, 1);
+                (origin + widthHalf, externalRadiusInRim + rimSpacing,
+                origin + widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
-                (origin + widthHalf, externalRadiusInRim + 5.5, origin - widthHalf, externalRadiusInRim + 5.5, 1);
+                (origin + widthHalf, externalRadiusInRim + 5.5, 
+                origin - widthHalf, externalRadiusInRim + 5.5, 1);
             _sketchEdit.ksLineSeg
                 (-20, origin, 20, origin, 3);
             _sketchDefinition.EndEdit();
@@ -291,8 +347,10 @@ namespace BearingPlugin.Libary
 
             if (ballChecked == true)
             {
-                InRimSketchForBallBearing(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-                OutRimSketchForBallBearing(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+                InRimSketchForBallBearing(externalRadiusOutRim, externalRadiusInRim, 
+                    internalRadiusInRim, widthBearing);
+                OutRimSketchForBallBearing(externalRadiusOutRim, externalRadiusInRim, 
+                    internalRadiusInRim, widthBearing);
                 var ball = BallSketch(externalRadiusInRim);
                 CircularEntity(_part, 5, ball);
 
@@ -304,10 +362,12 @@ namespace BearingPlugin.Libary
             else
             {
                
-                    InRimSketchForRollBearing(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
-                    OutRimSketchForRollBearing(externalRadiusOutRim, externalRadiusInRim, internalRadiusInRim, widthBearing);
+                    InRimSketchForRollBearing(externalRadiusOutRim, externalRadiusInRim,
+                        internalRadiusInRim, widthBearing);
+                    OutRimSketchForRollBearing(externalRadiusOutRim, externalRadiusInRim,
+                        internalRadiusInRim, widthBearing);
                     var roll = RollSketch(externalRadiusInRim,widthBearing);
-                    CircularEntity(_part, 7, roll);
+                    CircularEntity(_part, 20, roll);
 
                     if (supportShuft == true)
                     {

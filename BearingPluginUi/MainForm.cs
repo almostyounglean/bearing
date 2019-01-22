@@ -24,7 +24,7 @@ namespace BearingPluginUi
         private void BuildButton_Click(object sender, EventArgs e)
         {
             var errorMsg = string.Empty;
-            var dict = new Dictionary<TextBox, string>
+            var dict =  new Dictionary<TextBox, string>
             {
                 {ExternalDiametrOutRim, "Некорректный внешний радиус внешнего обода\n "},
                 {ExternalDiametrInRim, "Некорректный внешний радиус внутреннего обода\n "},
@@ -32,21 +32,11 @@ namespace BearingPluginUi
                 {BearingWidth, "Некорректная ширина подшипника\n "},
             };
 
-            var valueParams = new List<double>();
-            foreach (var keyValuePair in dict)
-            {
-                var curentParameter = 0.0;
-                if (!double.TryParse(keyValuePair.Key.Text, out curentParameter))
-                {
-                    errorMsg += keyValuePair.Value;
-                }
-
-                valueParams.Add(curentParameter);
-            }
-
             var supportShuft = SupportShuft.Checked;
             var ballChecked = ballRadioButton.Checked;
+            var valueParams = new List<double>();
 
+            errorMsg = CheckErrors(dict, out valueParams);
 
             if (errorMsg != String.Empty)
             {
@@ -74,6 +64,30 @@ namespace BearingPluginUi
                 return;
             }
 
+        }
+
+        /// <summary>
+        /// Parsing значений
+        /// </summary>
+        /// <param name="dict">Словарь с ошибками</param>
+        /// <param name="valueParams">Список параметров</param>
+        /// <returns></returns>
+        private string CheckErrors(Dictionary<TextBox, string> dict, out List<double> valueParams)
+        {
+            var errorMsg = string.Empty;
+            valueParams = new List<double>();
+
+            foreach (var keyValuePair in dict)
+            {
+                var curentParameter = 0.0;
+                if (!double.TryParse(keyValuePair.Key.Text, out curentParameter))
+                {
+                    errorMsg += keyValuePair.Value;
+                }
+
+                valueParams.Add(curentParameter);
+            }
+            return errorMsg;
         }
 
         /// <summary>

@@ -22,8 +22,8 @@ namespace BearingPlugin.Libary
         {
             if (Kompas == null)
             {
-                var type = Type.GetTypeFromProgID("KOMPAS.Application.5");
-                Kompas = (KompasObject)Activator.CreateInstance(type);
+                var type = Type.GetTypeFromProgID("KOMPAS.Application.5"); 
+                Kompas = (KompasObject)Activator.CreateInstance(type); 
             }
 
             if (Kompas != null)
@@ -33,22 +33,6 @@ namespace BearingPlugin.Libary
             }
         }
 
-        /// <summary>
-        /// Закрыть Компас 3D
-        /// </summary>
-        public void CloseKompas()
-        {
-            try
-            {
-                Kompas.Quit();
-                Kompas = null;
-            }
-            catch
-            {
-                Kompas = null;
-            }
-
-        }
     }
 }
 

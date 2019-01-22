@@ -167,7 +167,7 @@
             // rollRadioButton
             // 
             this.rollRadioButton.AutoSize = true;
-            this.rollRadioButton.Location = new System.Drawing.Point(9, 45);
+            this.rollRadioButton.Location = new System.Drawing.Point(189, 29);
             this.rollRadioButton.Name = "rollRadioButton";
             this.rollRadioButton.Size = new System.Drawing.Size(82, 17);
             this.rollRadioButton.TabIndex = 1;
@@ -178,7 +178,7 @@
             // 
             this.ballRadioButton.AutoSize = true;
             this.ballRadioButton.Checked = true;
-            this.ballRadioButton.Location = new System.Drawing.Point(9, 20);
+            this.ballRadioButton.Location = new System.Drawing.Point(40, 29);
             this.ballRadioButton.Name = "ballRadioButton";
             this.ballRadioButton.Size = new System.Drawing.Size(84, 17);
             this.ballRadioButton.TabIndex = 0;
